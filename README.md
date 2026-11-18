@@ -79,6 +79,18 @@ Line items not tied to an agreement make up 21% of rows but only 6.8% of spend. 
 - **One fiscal year:** Several years would need to be compared to see whether the October spike repeats every year.
 - **Product-level price comparison is not possible:** The product code identifies a product group, not a single product. For the distribution transformer code, the unit price ranges from $459 (a refurbished 25 kVA pole-mounted transformer) to $229,425 (a 2000 kVA network transformer). See section 8 of the notebook for details.
 
+## Junior DuckDB and REST API extension
+
+[![Junior DuckDB and REST checks](https://github.com/dogantunagerguz/austin-procurement-analysis/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/dogantunagerguz/austin-procurement-analysis/actions/workflows/ci.yml)
+
+The original pandas analysis now includes a small, runnable junior extension:
+
+- a paginated City of Austin REST API downloader with retries and schema validation;
+- DuckDB staging, supplier/month KPI views and four data-quality checks;
+- three unit tests plus a GitHub Actions workflow.
+
+[Read the junior extension guide](docs/junior-data-stack.md) · [REST API ingestion](scripts/download_data.py) · [DuckDB analysis](duckdb/run_analysis.py) · [Tests](tests/test_pipeline.py)
+
 ## Project structure
 
 ```
@@ -86,6 +98,9 @@ austin-procurement-analysis/
 ├── README.md
 ├── austin_procurement_fy2023.ipynb   # full analysis with explanations
 ├── requirements.txt
+├── scripts/                    # REST API ingestion
+├── duckdb/                    # local SQL/KPI checks
+├── tests/                     # REST and DuckDB tests
 ├── data/
 │   └── austin_purchase_orders_fy2023.csv
 └── images/
@@ -98,6 +113,8 @@ austin-procurement-analysis/
 ```bash
 pip install -r requirements.txt
 jupyter notebook austin_procurement_fy2023.ipynb
+python duckdb/run_analysis.py
+python -m unittest discover -s tests -v
 ```
 
 Once the notebook is open, use *Run All* to run it from top to bottom. Charts are saved to the `images/` folder.
@@ -106,4 +123,5 @@ Once the notebook is open, use *Run All* to run it from top to bottom. Charts ar
 
 - **pandas:** `read_csv`, `info`, `isna`, `describe`, filtering, `groupby` + `agg`, `sort_values`, `cumsum`, `nlargest`, date conversion (`to_datetime`, `to_period`)
 - **matplotlib:** horizontal and vertical bar charts, reference lines, saving figures
+- **Data stack:** REST API ingestion, DuckDB SQL/KPI views, automated tests and GitHub Actions
 - **Analytical thinking:** data quality checks, choosing the right grouping key, explaining a result that contradicts the expectation, recognising a question the data cannot answer
